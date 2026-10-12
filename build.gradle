@@ -1,4 +1,4 @@
-// LellekHUD für Minecraft 26.3 (Fabric) – JDK 25, Gradle 9.5.1, Loom 1.17 ohne Remapping (Mojang-Namen)
+// LellekHUD für Minecraft 26.3 (Fabric) – JDK 25, Gradle 9.7.0, Loom 1.18 ohne Remapping (Mojang-Namen)
 plugins {
     id 'net.fabricmc.fabric-loom' version '1.18-SNAPSHOT'
     id 'maven-publish'
