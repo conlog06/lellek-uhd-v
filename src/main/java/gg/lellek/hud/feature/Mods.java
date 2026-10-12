@@ -31,8 +31,8 @@ public class Mods {
 
     public static final Feature WAYPOINTS = add(new Feature("waypoints", "Wegpunkte", "Taste N setzt einen Wegpunkt, M öffnet die Karte. Schild + Lichtstrahl in der Welt", "Karte", true,
             new Setting.Bool("beam", "Lichtstrahl", true), new Setting.Int("maxdist", "Max. Entfernung (0 = alle)", 0, 0, 5000, "m")));
-    public static final Feature MINIMAP = add(new Feature("minimap", "Minimap", "Einstellungen der Minimap – das Element selbst unter HUD-Elemente", "Karte", true,
-            new Setting.Int("zoom", "Blöcke pro Pixel", 1, 1, 4, ""), new Setting.Bool("waypoints", "Wegpunkte anzeigen", true)));
+    public static final Feature MINIMAP = add(new Feature("minimap", "Karte & Minimap", "Gespeicherte Karte für Overworld, Nether und End – mit Höhlenebenen. Minimap selbst unter HUD-Elemente", "Karte", true,
+            new Setting.Bool("waypoints", "Wegpunkte anzeigen", true), new Setting.Bool("caves", "Höhlenkarte unter Tage", true), new Setting.Bool("mapmobs", "Mobs auf der Karte (M)", true)));
     public static final Feature PERSPECTIVE = add(new Feature("perspective", "Perspektive (Freelook)", "F6 halten: Kamera dreht 360° um dich, dein Körper bleibt", "Spiel", true));
     public static final Feature DAMAGE = add(new Feature("damage", "Schadensanzeige", "Schwebende Zahlen bei Schaden und Heilung an Entities", "Spiel", false));
     public static final Feature BLOCK_OVERLAY = add(new Feature("blockoverlay", "Block-Umrandung", "Farbe und Dicke des Block-Auswahlrahmens", "HUD", false,

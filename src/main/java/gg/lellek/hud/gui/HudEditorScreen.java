@@ -12,6 +12,8 @@ import net.minecraft.network.chat.Component;
 public class HudEditorScreen extends Screen {
     private final HudLayoutEditor editor = new HudLayoutEditor();
     private final Screen parent;
+    /** eigener Tastenzustand – MouseHandler.isLeftPressed() meldet bei offenem Screen immer false */
+    private boolean leftDown;
 
     public HudEditorScreen() { this(null, null); }
     public HudEditorScreen(Screen parent, HudElement focus) { super(Component.literal("LellekClient HUD-Editor")); this.parent = parent; editor.focus(focus); }
@@ -29,7 +31,7 @@ public class HudEditorScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float pt) {
         // Ziehen jedes Frame der Maus nachführen – funktioniert auch, wenn 26.3 keine Drag-Events schickt
-        if (editor.isDragging()) { if (!minecraft.mouseHandler.isLeftPressed()) editor.release(); else editor.drag(mouseX, mouseY, width, height); }
+        if (editor.isDragging() && leftDown) editor.drag(mouseX, mouseY, width, height);
         editor.render(g, font, width, height, mouseX, mouseY);
         Gfx.centered(g, font, "HUD-Editor", width / 2, 6, 0xFFFFB400);
         Gfx.centered(g, font, "Ziehen = verschieben · Mausrad = Größe · Rechtsklick = Einstellungen · ESC = speichern", width / 2, 17, 0xFFAAAAAA);
@@ -39,6 +41,7 @@ public class HudEditorScreen extends Screen {
     @Override
     public boolean mouseClicked(MouseButtonEvent e, boolean doubleClick) {
         if (super.mouseClicked(e, doubleClick)) return true;
+        if (e.button() == 0) leftDown = true;
         HudElement settings = editor.click((int) e.x(), (int) e.y(), e.button());
         if (settings != null) { minecraft.gui.setScreen(new ElementSettingsScreen(this, settings)); return true; }
         return editor.isDragging();
@@ -65,7 +68,7 @@ public class HudEditorScreen extends Screen {
         return super.keyPressed(e);
     }
     @Override
-    public boolean mouseReleased(MouseButtonEvent e) { editor.release(); return super.mouseReleased(e); }
+    public boolean mouseReleased(MouseButtonEvent e) { if (e.button() == 0) leftDown = false; editor.release(); return super.mouseReleased(e); }
     @Override
     public void onClose() { editor.release(); LellekHud.config.save(); if (parent != null) minecraft.gui.setScreen(parent); else super.onClose(); }
     @Override

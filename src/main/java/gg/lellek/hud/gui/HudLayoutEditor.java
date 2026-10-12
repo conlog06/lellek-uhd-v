@@ -23,20 +23,26 @@ public class HudLayoutEditor {
         boolean pulse = focus != null && System.currentTimeMillis() - focusSince < 2500 && (System.currentTimeMillis() / 250) % 2 == 0;
         for (HudElement el : LellekHud.config.elements) {
             el.layout(width, height);
-            boolean hover = el.contains(mouseX, mouseY);
+            if (!el.enabled) continue; // ausgeschaltete Elemente nicht als Platzhalter über die aktiven legen
+            boolean hover = el == hoveredTop(mouseX, mouseY);
             int border = el == dragging ? 0xFFFF8F1C : (el == focus && pulse) ? 0xFFFFFFFF : hover || el == focus ? 0xFFFFB400 : el.enabled ? 0x60FFFFFF : 0x60FF5555;
             g.outline(el.x - 1, el.y - 1, el.scaledWidth() + 2, el.scaledHeight() + 2, border);
             if (el.enabled) el.draw(g);
-            if (el == focus || el == dragging || hover) { String tag = el.name + " \u00b7 " + el.scale + "%"; int ty = el.y >= 12 ? el.y - 11 : el.y + el.scaledHeight() + 2; g.fill(el.x - 1, ty - 1, el.x + font.width(tag) + 3, ty + 9, 0xC0000000); g.text(font, tag, el.x + 1, ty, 0xFFFFB400, false); }
+            if (el == dragging || hover) { String tag = el.name + " \u00b7 " + el.scale + "%"; int ty = el.y >= 12 ? el.y - 11 : el.y + el.scaledHeight() + 2; g.fill(el.x - 1, ty - 1, el.x + font.width(tag) + 3, ty + 9, 0xC0000000); g.text(font, tag, el.x + 1, ty, 0xFFFFB400, false); }
             else Gfx.centered(g, font, el.name + " (aus)", el.x + el.scaledWidth() / 2, el.y + el.scaledHeight() / 2 - 4, 0xFF888888);
         }
     }
 
+    /** Oberstes sichtbares Element unter der Maus */
+    public HudElement hoveredTop(int mx, int my) {
+        for (int i = LellekHud.config.elements.size() - 1; i >= 0; i--) { HudElement el = LellekHud.config.elements.get(i); if (el.enabled && el.contains(mx, my)) return el; }
+        return null;
+    }
     /** @return angeklicktes Element bei Rechtsklick (für Einstellungen), sonst null */
     public HudElement click(int mx, int my, int button) {
         for (int i = LellekHud.config.elements.size() - 1; i >= 0; i--) {
             HudElement el = LellekHud.config.elements.get(i);
-            if (!el.contains(mx, my)) continue;
+            if (!el.enabled || !el.contains(mx, my)) continue;
             if (button == 1) return el;
             if (button == 0) { dragging = el; focus = el; dragOffX = mx - el.x; dragOffY = my - el.y; }
             return null;
@@ -80,7 +86,7 @@ public class HudLayoutEditor {
         if (dy == 0) return false;
         for (int i = LellekHud.config.elements.size() - 1; i >= 0; i--) {
             HudElement el = LellekHud.config.elements.get(i);
-            if (!el.contains(mx, my)) continue;
+            if (!el.enabled || !el.contains(mx, my)) continue;
             el.scale = Math.max(50, Math.min(300, el.scale + (dy > 0 ? 10 : -10)));
             el.layout(width, height);
             return true;

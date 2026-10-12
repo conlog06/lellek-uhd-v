@@ -4,6 +4,13 @@
 
 **Download:** neueste Version unter [Releases](https://github.com/conlog06/lellek-uhd-v/releases/latest) – `LellekHUD-26.3-x.y.z.jar` in den `mods`-Ordner legen (benötigt Fabric Loader ≥ 0.19.5, Fabric API und Java 25).
 
+## Neu in 1.4.1
+
+- **HUD-Editor repariert**: Ausgeschaltete Elemente werden im Editor nicht mehr als „(aus)“-Platzhalter über die aktiven gelegt (das war die „doppelte Ebene“), Klicks greifen immer das sichtbare Element, Ziehen bricht nicht mehr sofort ab.
+- **Höhlenkarte wie Xaero**: Unter Tage und im Nether zeigt die Karte automatisch die Höhlenebene, in der du bist (je 16 Blöcke eine eigene, gespeicherte Ebene). Abschaltbar unter Mods → Karte.
+- **Karte (M) neu**: ganzer Bildschirm, schärfer (Bildschirmauflösung), Zoom zum Mauszeiger, **Mobs und Spieler** als Punkte (Spielernamen), Cursor-Koordinaten und aktuelle Ebene oben.
+- Bessere Schattierung (Relief aus Nord- und West-Nachbarn, Wasser nach Tiefe), chunkweise berechnet.
+
 ## Neu in 1.4.0
 
 - **Emotes komplett neu**: 110 Emotes (60 frei, 50 im Shop) in 7 Kategorien – Gesten, Sitzen & Liegen (Sitzen, Schneidersitz, Liegen, Schlafen …), Tänze (Floss, Makarena, YMCA, Moonwalk, Breakdance …), Show & Akrobatik (Saltos, Handstand, Rad, Fliegen …), Sport, Gefühle, Lustig. Viele mit **Notenblock-Musik** (♫, Lautstärke unter Mods → Social → Emotes).
