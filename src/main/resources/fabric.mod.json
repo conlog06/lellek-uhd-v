@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "lellekhud",
+  "version": "${version}",
+  "name": "LellekHUD",
+  "description": "HUD des LellekClient: FPS, CPS, Keystrokes, Koordinaten, Spotify, Zoom, Cosmetics.",
+  "authors": ["Lellek"],
+  "license": "MIT",
+  "icon": "assets/lellekhud/textures/gui/logo.png",
+  "environment": "client",
+  "entrypoints": { "client": ["gg.lellek.hud.LellekHud"] },
+  "mixins": ["lellekhud.mixins.json"],
+  "depends": { "fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25", "fabric-api": "*" }
+}
