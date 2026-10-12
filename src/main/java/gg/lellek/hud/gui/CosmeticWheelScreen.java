@@ -28,14 +28,22 @@ public class CosmeticWheelScreen extends Screen {
         hovered = -1;
         if (dx * dx + dy * dy > inner * inner) hovered = (int) (((Math.toDegrees(Math.atan2(dy, dx)) + 90 + 360 + 180f / n) % 360) / (360f / n));
         // Ring über Scanlines (pro Zeile zwei Füllungen), Sektorfarbe nach Winkel
+        // Ring zeilenweise: gleiche Farben am Stück füllen (statt tausender 2-px-Rechtecke)
         for (int yy = -outer; yy <= outer; yy++) {
             int half = (int) Math.sqrt(outer * outer - yy * yy);
             int ih = Math.abs(yy) < inner ? (int) Math.sqrt(inner * inner - yy * yy) : 0;
-            for (int xx = -half; xx <= half; xx += 2) {
-                if (Math.abs(xx) < ih) continue;
-                int slot = (int) (((Math.toDegrees(Math.atan2(yy, xx)) + 90 + 360 + 180f / n) % 360) / (360f / n));
-                boolean sel = slot == hovered, active = idOf(slot).equals(LellekHud.config.cosmetic);
-                g.fill(cx + xx, cy + yy, cx + xx + 2, cy + yy + 1, sel ? 0xC0FFB400 : active ? 0xA0FF8F1C : 0xA0140F08);
+            int runStart = Integer.MIN_VALUE, runColor = 0;
+            for (int xx = -half; xx <= half + 1; xx++) {
+                int col = 0;
+                if (xx <= half && Math.abs(xx) >= ih) {
+                    int slot = (int) (((Math.toDegrees(Math.atan2(yy, xx)) + 90 + 360 + 180f / n) % 360) / (360f / n));
+                    boolean sel = slot == hovered, active = idOf(slot).equals(LellekHud.config.cosmetic);
+                    col = sel ? 0xD0FFB400 : active ? 0xB0FF8F1C : 0xC0140F08;
+                }
+                if (col != runColor) {
+                    if (runColor != 0) g.fill(cx + runStart, cy + yy, cx + xx, cy + yy + 1, runColor);
+                    runStart = xx; runColor = col;
+                }
             }
         }
         for (int i = 0; i < n && grow > 0.9f; i++) {
@@ -46,11 +54,33 @@ public class CosmeticWheelScreen extends Screen {
         gg.lellek.hud.gui.Gfx.centered(g, font, "Cosmetics", cx, cy - 8, 0xFFFFB400);
         gg.lellek.hud.gui.Gfx.centered(g, font, hovered >= 0 ? nameOf(hovered) : "", cx, cy + 4, 0xFFAAAAAA);
     }
-    private void choose() { if (hovered >= 0) { LellekHud.config.cosmetic = idOf(hovered); LellekHud.config.save(); } minecraft.gui.setScreen(null); }
+    /** Kein Weichzeichner hinter dem Rad – das Spiel bleibt scharf sichtbar */
     @Override
-    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { choose(); return true; }
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float pt) {}
+    private boolean chosen;
+    private void choose() {
+        if (chosen) return; chosen = true;
+        if (hovered >= 0) { LellekHud.config.cosmetic = idOf(hovered); LellekHud.config.save(); }
+        minecraft.gui.setScreen(null);
+    }
     @Override
-    public void tick() { if (!LellekHud.cosmeticKey.isDown() && System.currentTimeMillis() - opened > 250) choose(); }
+    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { if (e.button() == 1) { minecraft.gui.setScreen(null); return true; } choose(); return true; }
+    /** Halten + loslassen wählt aus. Die KeyMapping ist bei offenem Screen immer "nicht gedrückt" – daher die echte Taste abfragen. */
+    private boolean physicallyDown() {
+        try {
+            com.mojang.blaze3d.platform.InputConstants.Key k = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(LellekHud.cosmeticKey);
+            if (k.getType() != com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD) return true; // Maustaste: nur per Klick wählen
+            return com.mojang.blaze3d.platform.InputConstants.isKeyDown(k.getValue());
+        } catch (Throwable t) { return true; }
+    }
+    private boolean wasHeld;
+    @Override
+    public void tick() {
+        boolean down = physicallyDown();
+        if (down) wasHeld = true;
+        // Nur auslösen, wenn die Taste wirklich gehalten und dann losgelassen wurde; kurzes Tippen lässt das Rad offen (dann per Klick wählen)
+        if (!down && wasHeld && System.currentTimeMillis() - opened > 300) choose();
+    }
     @Override
     public boolean isPauseScreen() { return false; }
 }

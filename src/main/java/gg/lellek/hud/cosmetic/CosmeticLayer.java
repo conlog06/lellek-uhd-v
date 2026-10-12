@@ -34,7 +34,11 @@ public class CosmeticLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
     /** UUID aus dem Render-State: über die Spielerliste per Namensschild. In 26.x hat der State evtl. ein id-Feld – dann hier vereinfachen. */
     public static java.util.UUID uuidOf(AvatarRenderState s) {
-        Minecraft mc = Minecraft.getInstance(); if (s.nameTag == null || mc.getConnection() == null) return null;
+        Minecraft mc = Minecraft.getInstance();
+        // 26.3: Render-State trägt die Entity-ID – funktioniert auch für den eigenen Spieler (der kein Namensschild hat)
+        if (mc.level != null) { net.minecraft.world.entity.Entity e = mc.level.getEntity(s.id); if (e instanceof net.minecraft.world.entity.player.Player) return e.getUUID(); }
+        if (mc.player != null && s.nameTag == null && s.id == mc.player.getId()) return mc.player.getUUID();
+        if (s.nameTag == null || mc.getConnection() == null) return null;
         String name = s.nameTag.getString();
         for (net.minecraft.client.multiplayer.PlayerInfo i : mc.getConnection().getOnlinePlayers()) if (i.getProfile().name().equals(name)) return i.getProfile().id();
         return null;

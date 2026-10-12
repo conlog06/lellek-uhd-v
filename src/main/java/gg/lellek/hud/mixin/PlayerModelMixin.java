@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerModelMixin {
     private final Pose lellekhud$pose = new Pose();
 
-    @Inject(method = "setupAnim", at = @At("TAIL"))
+    @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("TAIL"), require = 0)
     private void lellekhud$emote(AvatarRenderState state, CallbackInfo ci) {
         gg.lellek.hud.Diag.playerModel = true;
         EmoteState.Playing pl = EmoteState.forUuid(CosmeticLayer.uuidOf(state));

@@ -29,6 +29,8 @@ public class MinimapElement extends HudElement {
         if (texture == null) { texture = new DynamicTexture(() -> "lellek_minimap", TEX, TEX, false); location = Identifier.fromNamespaceAndPath("lellekhud", "minimap"); mc.getTextureManager().register(location, texture); }
         int px = mc.player.getBlockX(), pz = mc.player.getBlockZ(), zoom = zoom(); long now = System.currentTimeMillis();
         if (px == lastX && pz == lastZ && zoom == lastZoom && now - lastUpdate < 2000) return;
+        // Neu berechnen kostet tausende Block-Abfragen: höchstens 4x pro Sekunde, im Hintergrund nur alle 5 s
+        if (now - lastUpdate < (gg.lellek.hud.LellekHud.features != null && gg.lellek.hud.LellekHud.features.inBackground() ? 5000 : 250)) return;
         lastX = px; lastZ = pz; lastZoom = zoom; lastUpdate = now;
         NativeImage img = texture.getPixels(); if (img == null) return;
         for (int py = 0; py < TEX; py++) for (int pxl = 0; pxl < TEX; pxl++) img.setPixel(pxl, py, colorAt(mc.level, px + (pxl - TEX / 2) * zoom, pz + (py - TEX / 2) * zoom));

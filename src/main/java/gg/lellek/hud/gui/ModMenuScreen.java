@@ -31,6 +31,10 @@ public class ModMenuScreen extends Screen {
     private float scroll, scrollTarget;
     private final long opened = System.currentTimeMillis();
     private final Map<String, Float> toggleAnim = new HashMap<>();
+    /** Verschiebe-Modus: Menü ausgeblendet, HUD-Elemente direkt ziehbar */
+    private boolean layoutMode;
+    private final HudLayoutEditor layout = new HudLayoutEditor();
+    private static final int BTN_W = 90, BTN_H = 18;
 
     private static class Card { String id, name, desc; boolean on, hasSettings, radio, locked; Feature feature; HudElement element; Cosmetic cosmetic; }
     private final List<Card> cards = new ArrayList<>();
@@ -63,7 +67,7 @@ public class ModMenuScreen extends Screen {
         if (cat.equals("HUD-Elemente") || (cat.equals("Alle") && !q.isEmpty()))
             for (HudElement el : LellekHud.config.elements) {
                 if (!q.isEmpty() && !el.name.toLowerCase().contains(q)) continue;
-                Card c = new Card(); c.id = "el." + el.id; c.name = el.name; c.desc = "HUD-Element · Position im Editor (rechte Shift)"; c.on = el.enabled; c.hasSettings = true; c.element = el; cards.add(c);
+                Card c = new Card(); c.id = "el." + el.id; c.name = el.name; c.desc = "HUD-Element \u00b7 \u2725 = verschieben"; c.on = el.enabled; c.hasSettings = true; c.element = el; cards.add(c);
             }
         scroll = scrollTarget = 0;
     }
@@ -76,6 +80,8 @@ public class ModMenuScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float pt) {
         float in = Math.min(1f, (System.currentTimeMillis() - opened) / 180f); in = 1 - (1 - in) * (1 - in);
         scroll += (scrollTarget - scroll) * 0.3f;
+        search.visible = !layoutMode;
+        if (layoutMode) { renderLayout(g, mouseX, mouseY, pt); return; }
         super.extractRenderState(g, mouseX, mouseY, pt);
         g.fill(0, 0, width, height, BG);
         g.fill(0, 0, SIDEBAR, height, PANEL); g.fill(SIDEBAR, 0, SIDEBAR + 1, height, LINE);
@@ -92,6 +98,9 @@ public class ModMenuScreen extends Screen {
         boolean chov = mouseX < SIDEBAR && mouseY >= cy && mouseY < cy + 22;
         g.fill(6, cy, SIDEBAR - 6, cy + 22, chov ? 0x40FFB400 : 0x25FFB400);
         gg.lellek.hud.gui.Gfx.centered(g, font, "\u2726 Cosmetics", SIDEBAR / 2, cy + 7, GOLD);
+        int ly = cy + 26; boolean lhov = mouseX < SIDEBAR && mouseY >= ly && mouseY < ly + 22;
+        g.fill(6, ly, SIDEBAR - 6, ly + 22, lhov ? 0x40FFB400 : 0x25FFB400);
+        gg.lellek.hud.gui.Gfx.centered(g, font, "\u2725 HUD verschieben", SIDEBAR / 2, ly + 7, GOLD);
         gg.lellek.hud.gui.Gfx.text(g, font, gg.lellek.hud.Diag.summary(), SIDEBAR + 16, height - 22, 0xFF666666);
         gg.lellek.hud.gui.Gfx.text(g, font, LellekHud.CLIENT_NAME, 8, height - 22, MUTED);
         gg.lellek.hud.gui.Gfx.text(g, font, LellekHud.MC_VERSION + " \u00b7 HUD " + LellekHud.VERSION, 8, height - 12, MUTED);
@@ -110,6 +119,7 @@ public class ModMenuScreen extends Screen {
             for (int l = 0; l < Math.min(2, lines.size()); l++) gg.lellek.hud.gui.Gfx.text(g, font, lines.get(l), x + 10, y + 24 + l * 10, MUTED);
             if (c.locked) gg.lellek.hud.gui.Gfx.text(g, font, "folgt", x + cw - 40, y + 12, 0xFF777777); else drawToggle(g, c, x + cw - 44, y + 10);
             if (c.hasSettings) gg.lellek.hud.gui.Gfx.text(g, font, "\u2699", x + cw - 62, y + 36, hov ? GOLD : MUTED);
+            if (c.element != null) { boolean mh = hov && mouseX >= x + cw - 44 && mouseY >= y + 30; gg.lellek.hud.gui.Gfx.text(g, font, "\u2725", x + cw - 40, y + 36, mh ? GOLD : MUTED); }
         }
         g.disableScissor();
         g.fill(SIDEBAR + 12, 10, width - 12, 36, CARD);
@@ -117,6 +127,26 @@ public class ModMenuScreen extends Screen {
         if (cards.isEmpty()) gg.lellek.hud.gui.Gfx.centered(g, font, "Nichts gefunden", SIDEBAR + (width - SIDEBAR) / 2, height / 2, MUTED);
         gg.lellek.hud.gui.Gfx.centered(g, font, "ESC = zurück", SIDEBAR + (width - SIDEBAR) / 2, height - 12, 0xFF555555);
     }
+
+    private int btnY() { return height - 30; }
+    private int btnX(int i) { return width / 2 - BTN_W - 3 + i * (BTN_W + 6); }
+    private static final String[] LAYOUT_BTNS = { "\u2714 Fertig", "Zurücksetzen" };
+    public boolean isLayoutMode() { return layoutMode; }
+    private void renderLayout(GuiGraphicsExtractor g, int mouseX, int mouseY, float pt) {
+        g.fill(0, 0, width, height, 0x30000000);
+        layout.render(g, font, width, height, mouseX, mouseY);
+        g.fill(width / 2 - 170, 4, width / 2 + 170, 30, 0xC0130E08);
+        Gfx.centered(g, font, "HUD verschieben", width / 2, 8, GOLD);
+        Gfx.centered(g, font, "Ziehen = verschieben \u00b7 Mausrad = Größe \u00b7 Rechtsklick = Einstellungen \u00b7 ESC = fertig", width / 2, 19, MUTED);
+        if (layout.isDragging()) return;
+        for (int i = 0; i < LAYOUT_BTNS.length; i++) {
+            int x = btnX(i), y = btnY(); boolean hov = mouseX >= x && mouseX < x + BTN_W && mouseY >= y && mouseY < y + BTN_H;
+            g.fill(x, y, x + BTN_W, y + BTN_H, hov ? 0xF032271A : 0xE0261E13); g.fill(x, y + BTN_H - 1, x + BTN_W, y + BTN_H, i == 0 ? GOLD : LINE);
+            Gfx.centered(g, font, LAYOUT_BTNS[i], x + BTN_W / 2, y + 5, i == 0 ? GOLD : 0xFFFFFFFF);
+        }
+    }
+    private void enterLayout(HudElement focus) { layoutMode = true; layout.focus(focus); if (search != null) search.setFocused(false); }
+    private void exitLayout() { layoutMode = false; layout.release(); LellekHud.config.save(); rebuild(); }
 
     private void drawToggle(GuiGraphicsExtractor g, Card c, int x, int y) {
         float a = toggleAnim.getOrDefault(c.id, c.on ? 1f : 0f);
@@ -138,12 +168,22 @@ public class ModMenuScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent e, boolean dbl) {
-        if (super.mouseClicked(e, dbl)) return true;
         int mouseX = (int) e.x(), mouseY = (int) e.y();
+        if (layoutMode) {
+            if (mouseY >= btnY() && mouseY < btnY() + BTN_H) {
+                if (mouseX >= btnX(0) && mouseX < btnX(0) + BTN_W) { exitLayout(); return true; }
+                if (mouseX >= btnX(1) && mouseX < btnX(1) + BTN_W) { LellekHud.config.reset(); return true; }
+            }
+            HudElement settings = layout.click(mouseX, mouseY, e.button());
+            if (settings != null) minecraft.gui.setScreen(new ElementSettingsScreen(this, settings));
+            return true;
+        }
+        if (super.mouseClicked(e, dbl)) return true;
         if (mouseX < SIDEBAR) {
             for (int i = 0; i < categories.length; i++) { int y = 70 + i * 22; if (mouseY >= y && mouseY < y + 20) { category = i; rebuild(); return true; } }
             int cy = 70 + categories.length * 22 + 10;
             if (mouseY >= cy && mouseY < cy + 22) { minecraft.gui.setScreen(new CosmeticsScreen(this)); return true; }
+            if (mouseY >= cy + 26 && mouseY < cy + 48) { enterLayout(null); return true; }
             return false;
         }
         if (mouseY < contentTop()) return false;
@@ -152,6 +192,7 @@ public class ModMenuScreen extends Screen {
             Card c = cards.get(i);
             int x = SIDEBAR + 16 + (i % cols) * (cw + GAP), y = top + (i / cols) * (CARD_H + GAP) - (int) scroll;
             if (mouseX < x || mouseX >= x + cw || mouseY < y || mouseY >= y + CARD_H) continue;
+            if (c.element != null && mouseX >= x + cw - 44 && mouseY >= y + 30) { enterLayout(c.element); return true; }
             if (c.hasSettings && mouseX >= x + cw - 70 && mouseY >= y + 30) {
                 if (c.feature != null) minecraft.gui.setScreen(new FeatureSettingsScreen(this, c.feature));
                 if (c.element != null) minecraft.gui.setScreen(new ElementSettingsScreen(this, c.element));
@@ -169,13 +210,18 @@ public class ModMenuScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mx, double my, double dx, double dy) {
+        if (layoutMode) { layout.scroll((int) mx, (int) my, dy, width, height); return true; }
         int rows = (cards.size() + columns() - 1) / columns();
         int max = Math.max(0, rows * (CARD_H + GAP) - (height - contentTop() - 16));
         scrollTarget = (float) Math.max(0, Math.min(max, scrollTarget - Math.signum(dy) * 30));
         return true;
     }
     @Override
-    public void onClose() { LellekHud.config.save(); minecraft.gui.setScreen(parent); }
+    public boolean mouseDragged(MouseButtonEvent e, double dx, double dy) { if (layoutMode) return layout.drag((int) e.x(), (int) e.y(), width, height); return super.mouseDragged(e, dx, dy); }
+    @Override
+    public boolean mouseReleased(MouseButtonEvent e) { if (layoutMode) { layout.release(); return true; } return super.mouseReleased(e); }
+    @Override
+    public void onClose() { if (layoutMode) { exitLayout(); return; } LellekHud.config.save(); minecraft.gui.setScreen(parent); }
     @Override
     public boolean isPauseScreen() { return false; }
 }

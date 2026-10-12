@@ -14,6 +14,7 @@ public class Features {
     private double savedSensitivity = -1, savedGamma = -1, savedTilt = -1; private int savedFov = -1;
     /** Smooth Zoom: Ziel- und aktuelle Vergrößerung, interpoliert pro Frame (logarithmisch, damit jede Stufe gleich weich wirkt). */
     private double zoomTarget = 1, zoomCurrent = 1, scrollLevel = -1; private long zoomLastNanos; private long zoomShownUntil; private double lastSensZoom = 1;
+    private int savedFpsLimit = -1;
     private boolean gammaApplied, tiltApplied, sneakActive, wasHurt;
     public static double lastReach = 0; public static int combo = 0;
 
@@ -45,6 +46,17 @@ public class Features {
     /** Mausempfindlichkeit so umrechnen, dass sich die Drehung proportional zum Sichtfeld verlangsamt (MC: (s*0.6+0.2)^3). */
     private static double sensFor(double base, double zoom) { return Math.max(0, Math.min(1, ((base * 0.6 + 0.2) / Math.cbrt(zoom) - 0.2) / 0.6)); }
 
+    /** Fenster nicht im Fokus → FPS-Limit runter (spart CPU/GPU für andere Programme), beim Zurückkommen Originalwert. */
+    private void backgroundFps(Minecraft mc) {
+        boolean bg = Mods.BACKGROUND_FPS.enabled && !mc.getWindow().isFocused();
+        if (bg && savedFpsLimit < 0) {
+            savedFpsLimit = mc.options.framerateLimit().get();
+            int target = Integer.parseInt(((Setting.Choice) Mods.BACKGROUND_FPS.setting("fps")).current());
+            if (savedFpsLimit > target) mc.options.framerateLimit().set(target); else savedFpsLimit = -1;
+        } else if (!bg && savedFpsLimit >= 0) { mc.options.framerateLimit().set(savedFpsLimit); savedFpsLimit = -1; }
+    }
+    public boolean inBackground() { return savedFpsLimit >= 0; }
+
     public void onAttack() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.hitResult == null) return;
@@ -73,6 +85,7 @@ public class Features {
     }
 
     public void tick(Minecraft mc) {
+        backgroundFps(mc);
         if (mc.player == null) { if (savedSensitivity >= 0) { mc.options.sensitivity().set(savedSensitivity); savedSensitivity = -1; } zooming = false; zoomTarget = zoomCurrent = 1; combo = 0; return; }
 
         boolean want = Mods.ZOOM.enabled && LellekHud.zoomKey.isDown() && LellekHud.screen(mc) == null;

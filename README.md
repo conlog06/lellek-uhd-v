@@ -4,6 +4,13 @@
 
 **Download:** neueste Version unter [Releases](https://github.com/conlog06/lellek-uhd-v/releases/latest) – `LellekHUD-26.3-x.y.z.jar` in den `mods`-Ordner legen (benötigt Fabric Loader ≥ 0.19.5, Fabric API und Java 25).
 
+## Neu in 1.3.1
+
+- **HUD im Mod-Menü verschieben**: Seitenleiste → „✥ HUD verschieben“ oder ✥ auf einer HUD-Element-Karte. Das Menü blendet sich aus, Elemente direkt ziehen (mit Einrasten), Mausrad = Größe, Rechtsklick = Einstellungen, „Fertig“/ESC = zurück ins Menü.
+- **Cosmetics-Rad (X)** fixt: schließt nicht mehr sofort, kein Weichzeichner, flüssiger. Halten + loslassen oder kurz tippen und klicken. Rechtsklick = abbrechen.
+- **Eigene Cosmetics & Emotes** werden wieder angezeigt (Spieler-Erkennung über die Entity-ID statt Namensschild). Beim Emote wechselt die Kamera automatisch in die 3rd-Person und danach zurück.
+- **Kein Lag mehr im Hintergrund**: neues Feature „Hintergrund-FPS-Limit“ (Standard 10 FPS, wenn Minecraft nicht im Fokus ist); Minimap rechnet seltener neu.
+
 ## Neu in 1.3 (26.3)
 
 - **Minecraft 26.3** (Fabric API 0.162.0+26.3, Loader 0.19.5).
@@ -21,7 +28,7 @@
 Das HUD des LellekClient (0.4): FPS, CPS, Koordinaten, Ping, Uhrzeit, Keystrokes, Spotify, Rüstung, Effekte · Zoom, ToggleSprint, Fullbright, Hitboxen · Cosmetics mit Animation (Flügel, Heiligenschein, Krone, Lellek-Cape, Glitzer-Spur) · Hauptmenü mit Logo.
 
 - **Rechte Shift-Taste**: HUD-Editor (ziehen, Rechtsklick = Einstellungen mit Regler und Farbwähler)
-- **X**: Cosmetics-Rad (halten, Maus in Richtung, loslassen oder klicken)
+- **X**: Cosmetics-Rad (halten + loslassen, oder tippen + klicken)
 - **C**: Zoom halten (weich), Mausrad zoomt näher ran
 - **Numpad 4/5/6**: Spotify zurück / Play-Pause / weiter
 - Config: `config/lellekhud.json`

@@ -18,7 +18,7 @@ public class HudRenderer {
     }
     public static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.getDebugOverlay().showDebugScreen() || LellekHud.screen(mc) instanceof HudEditorScreen) return;
+        if (mc.player == null || mc.getDebugOverlay().showDebugScreen() || LellekHud.screen(mc) instanceof HudEditorScreen || (LellekHud.screen(mc) instanceof gg.lellek.hud.gui.ModMenuScreen mm && mm.isLayoutMode())) return;
         drawToast(g);
         if (LellekHud.features != null && LellekHud.features.showZoomIndicator()) {
             String t = String.format(java.util.Locale.ROOT, "%.1fx", LellekHud.features.zoomLevel());
