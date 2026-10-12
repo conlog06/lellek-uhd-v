@@ -83,29 +83,7 @@ public class CosmeticsScreen extends Screen {
         Gfx.text(g, font, v.isEmpty() && !search.isFocused() ? "Suchen\u2026" : v + (search.isFocused() && (System.currentTimeMillis() / 500) % 2 == 0 ? "_" : ""), search.getX() + 4, search.getY() + 6, v.isEmpty() ? MUTED : 0xFFFFFFFF);
     }
 
-    private static java.lang.reflect.Method previewMethod; private static boolean previewSearched;
-    /** InventoryScreen.renderEntityInInventory… heißt je nach Version anders – per Reflection suchen und Argumente nach Typ befüllen */
-    private boolean drawPlayerPreview(GuiGraphicsExtractor g, int x1, int y1, int x2, int y2, int mx, int my) {
-        if (minecraft.player == null) return false;
-        if (!previewSearched) {
-            previewSearched = true;
-            for (java.lang.reflect.Method m : net.minecraft.client.gui.screens.inventory.InventoryScreen.class.getMethods())
-                if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getName().toLowerCase().contains("entity") && m.getParameterCount() >= 6 && m.getParameterTypes()[0] == GuiGraphicsExtractor.class) { previewMethod = m; break; }
-        }
-        if (previewMethod == null) return false;
-        try {
-            Class<?>[] pt = previewMethod.getParameterTypes(); Object[] args = new Object[pt.length];
-            int[] ints = { x1, y1, x2, y2, 60 }; float[] floats = { 0.0625f, mx, my }; int ii = 0, fi = 0;
-            for (int i = 0; i < pt.length; i++) {
-                if (pt[i] == GuiGraphicsExtractor.class) args[i] = g;
-                else if (pt[i] == int.class) args[i] = ii < ints.length ? ints[ii++] : 0;
-                else if (pt[i] == float.class) args[i] = fi < floats.length ? floats[fi++] : 0f;
-                else if (pt[i].isInstance(minecraft.player)) args[i] = minecraft.player;
-                else return false;
-            }
-            previewMethod.invoke(null, args); return true;
-        } catch (Throwable t) { previewMethod = null; return false; }
-    }
+    private boolean drawPlayerPreview(GuiGraphicsExtractor g, int x1, int y1, int x2, int y2, int mx, int my) { return Gfx.playerPreview(g, x1, y1, x2, y2, mx, my); }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent e, boolean dbl) {

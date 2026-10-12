@@ -3,6 +3,16 @@
   "minVersion": "0.8",
   "package": "gg.lellek.hud.mixin",
   "compatibilityLevel": "JAVA_25",
-  "client": ["CameraFovMixin", "MouseHandlerMixin", "OptionInstanceMixin", "EntityTurnMixin", "CameraMixin", "PlayerModelMixin"],
-  "injectors": { "defaultRequire": 0 }
+  "client": [
+    "CameraFovMixin",
+    "MouseHandlerMixin",
+    "OptionInstanceMixin",
+    "EntityTurnMixin",
+    "CameraMixin",
+    "PlayerModelMixin",
+    "AvatarRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
 }

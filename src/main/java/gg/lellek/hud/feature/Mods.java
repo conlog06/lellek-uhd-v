@@ -51,6 +51,8 @@ public class Mods {
     public static final Feature AUTO_RESPAWN = add(new Feature("autorespawn", "Auto-Respawn", "Nach dem Tod automatisch neu spawnen", "Spiel", false, new Setting.Int("delay", "Verzögerung", 2, 0, 10, "s")));
     public static final Feature DURABILITY = add(new Feature("durability", "Haltbarkeits-Warnung", "Warnt, wenn Rüstung oder Werkzeug fast kaputt ist", "Spiel", true, new Setting.Int("percent", "Warnen unter", 10, 1, 50, "%")));
 
+    public static final Feature EMOTES = add(new Feature("emotes", "Emotes", "Taste G: über 100 Emotes, Tänze mit Musik (andere LellekClient-Spieler sehen sie)", "Social", true,
+            new Setting.Bool("sounds", "Musik & Sounds", true), new Setting.Int("volume", "Lautstärke", 60, 0, 100, "%")));
     public static final Feature BACKGROUND_FPS = add(new Feature("bgfps", "Hintergrund-FPS-Limit", "Wenn Minecraft nicht im Vordergrund ist, wird die FPS gedrosselt – andere Programme laufen flüssig", "Spiel", true,
             new Setting.Choice("fps", "FPS im Hintergrund", 0, "10", "20", "30", "60")));
 

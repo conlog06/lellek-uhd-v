@@ -4,6 +4,15 @@
 
 **Download:** neueste Version unter [Releases](https://github.com/conlog06/lellek-uhd-v/releases/latest) – `LellekHUD-26.3-x.y.z.jar` in den `mods`-Ordner legen (benötigt Fabric Loader ≥ 0.19.5, Fabric API und Java 25).
 
+## Neu in 1.4.0
+
+- **Emotes komplett neu**: 110 Emotes (60 frei, 50 im Shop) in 7 Kategorien – Gesten, Sitzen & Liegen (Sitzen, Schneidersitz, Liegen, Schlafen …), Tänze (Floss, Makarena, YMCA, Moonwalk, Breakdance …), Show & Akrobatik (Saltos, Handstand, Rad, Fliegen …), Sport, Gefühle, Lustig. Viele mit **Notenblock-Musik** (♫, Lautstärke unter Mods → Social → Emotes).
+  Technik: Oberkörper kippt jetzt aus der Hüfte, Ganzkörper-Bewegung (Drehen, Saltos, Hinsetzen, Liegen), weiches Ein-/Ausblenden, kein doppelt verdrehter Hut/Ärmel mehr.
+- **Emote-Menü (G)**: Kategorien, Suche, Live-Vorschau an deinem Spieler beim Drüberfahren.
+- **Minimap im Xaero-Stil**: dreht sich mit der Blickrichtung, N/O/S/W am Rand, **Mobs als Punkte** (Spieler weiß, Monster rot, Tiere gelb), Relief-Schattierung, Wasser nach Tiefe, Koordinaten darunter. Einstellbar: Größe, Zoom, Drehen, Mobs, Spieler (Rechtsklick im HUD-Editor).
+- **HUD-Editor** wieder schlicht: nur Ziehen mit der Maus (plus Mausrad = Größe).
+- Shop-Preise für den Cosmetics-Server: `docs/shop-prices.json`.
+
 ## Neu in 1.3.2
 
 - **HUD-Editor** (rechte Shift, oder Mod-Menü → „✥ HUD verschieben“): Verschieben funktioniert jetzt zuverlässig in 26.3. Neu: **Elementliste links** (Kästchen = an/aus, Name = auswählen, ⚙ = Einstellungen), **Pfeiltasten** verschieben das gewählte Element pixelgenau (Shift = 10 px), Name + Größe werden am Element angezeigt.

@@ -120,11 +120,30 @@ public final class MapStore {
         }
         BlockPos top = new BlockPos(bx, h, bz); BlockState st = level.getBlockState(top);
         int c = st.getMapColor(level, top).col; if (c == 0) return 0;
-        int north = isNether() ? h : level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz - 1) - 1;
-        if (isNether()) { BlockState n = level.getBlockState(top.north()); BlockState na = level.getBlockState(top.north().above()); north = n.isAir() ? h - 1 : !na.isAir() ? h + 1 : h; }
-        float shade = h > north ? 1.12f : h < north ? 0.82f : 1f;
-        int r = Math.min(255, (int) (((c >> 16) & 255) * shade)), g = Math.min(255, (int) (((c >> 8) & 255) * shade)), b = Math.min(255, (int) ((c & 255) * shade));
-        return 0xFF000000 | (r << 16) | (g << 8) | b;
+        // Wasser: Farbe nach Tiefe abdunkeln, Grund leicht durchscheinen lassen (wie Xaero)
+        if (!st.getFluidState().isEmpty()) {
+            int depth = 0; BlockPos.MutableBlockPos q = top.mutable(); BlockState below = st;
+            while (depth < 16 && !below.getFluidState().isEmpty()) { q.move(0, -1, 0); below = level.getBlockState(q); depth++; }
+            int floor = below.getMapColor(level, q).col;
+            float k = Math.min(1f, depth / 10f), dark = 1f - k * 0.45f;
+            int mix = floor == 0 ? c : blend(c, floor, 0.25f * (1 - k));
+            return 0xFF000000 | scale(mix, dark * 0.92f);
+        }
+        // Relief: Höhenunterschied zu Nord- und West-Nachbar
+        int hn, hw;
+        if (isNether()) { hn = level.getBlockState(top.north()).isAir() ? h - 1 : !level.getBlockState(top.north().above()).isAir() ? h + 1 : h; hw = level.getBlockState(top.west()).isAir() ? h - 1 : !level.getBlockState(top.west().above()).isAir() ? h + 1 : h; }
+        else { hn = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz - 1) - 1; hw = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx - 1, bz) - 1; }
+        float d = (h - hn) + (h - hw) * 0.6f;
+        float shade = 0.94f + Math.max(-0.28f, Math.min(0.2f, d * 0.07f));
+        return 0xFF000000 | scale(c, shade);
+    }
+    private static int scale(int rgb, float f) {
+        int r = Math.min(255, (int) (((rgb >> 16) & 255) * f)), g = Math.min(255, (int) (((rgb >> 8) & 255) * f)), b = Math.min(255, (int) ((rgb & 255) * f));
+        return (r << 16) | (g << 8) | b;
+    }
+    private static int blend(int a, int b, float k) {
+        int r = (int) (((a >> 16) & 255) * (1 - k) + ((b >> 16) & 255) * k), g = (int) (((a >> 8) & 255) * (1 - k) + ((b >> 8) & 255) * k), bl = (int) ((a & 255) * (1 - k) + (b & 255) * k);
+        return (r << 16) | (g << 8) | bl;
     }
 
     // ---- Speichern / Laden ----

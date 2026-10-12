@@ -1,13 +1,17 @@
 package gg.lellek.hud.emote;
 
-/** Ein Emote: Name, Preis, Dauer (0 = Schleife) und die Pose als Funktion der Zeit. */
-public abstract class Emote {
-    public final String id, name; public final int price; public final float duration;
-    protected Emote(String id, String name, int price, float duration) { this.id = id; this.name = name; this.price = price; this.duration = duration; }
-    /** t = Sekunden seit Start; Winkel in Grad in p schreiben (p ist bereits genullt) */
-    public abstract void pose(float t, Pose p);
-    protected static float s(float t, float speed) { return (float) Math.sin(t * speed); }
-    protected static float c(float t, float speed) { return (float) Math.cos(t * speed); }
-    /** Ein-/Ausblenden der Pose in 0.25 s */
-    public float weight(float t) { float in = Math.min(1f, t / 0.25f); if (duration <= 0) return in; return Math.min(in, Math.max(0f, (duration - t) / 0.25f)); }
+/** Ein Emote: Name, Kategorie, Preis (0 = frei), Dauer (0 = Schleife), Pose als Funktion der Zeit, optional Musik. */
+public class Emote {
+    public interface PoseFn { void apply(float t, Pose p); }
+    public final String id, name, category; public final int price; public final float duration;
+    private final PoseFn fn; public EmoteMusic music;
+    public Emote(String id, String name, String category, int price, float duration, PoseFn fn) { this.id = id; this.name = name; this.category = category; this.price = price; this.duration = duration; this.fn = fn; }
+    public Emote music(EmoteMusic m) { this.music = m; return this; }
+    public void pose(float t, Pose p) { fn.apply(t, p); }
+    /** Weiches Ein-/Ausblenden (0.3 s) */
+    public float weight(float t) {
+        float in = smooth(t / 0.3f); if (duration <= 0) return in;
+        return Math.min(in, smooth((duration - t) / 0.3f));
+    }
+    static float smooth(float x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
 }

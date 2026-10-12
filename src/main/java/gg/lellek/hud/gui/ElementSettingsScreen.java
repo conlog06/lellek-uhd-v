@@ -48,11 +48,6 @@ public class ElementSettingsScreen extends Screen {
             else if (s instanceof Setting.Choice c) addRenderableWidget(Button.builder(Component.literal(s.name + ": " + c.current()), b -> { c.next(); b.setMessage(Component.literal(s.name + ": " + c.current())); }).bounds(rx, y, 150, 20).build());
             y += 22;
         }
-        // Position direkt hier ändern (Shift = 10 px)
-        int px = left, py = height - 52;
-        String[] arrows = { "\u25c0", "\u25b6", "\u25b2", "\u25bc" }; int[][] dir = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-        for (int i = 0; i < 4; i++) { final int k = i; addRenderableWidget(Button.builder(Component.literal(arrows[i]), b -> { int st = com.mojang.blaze3d.platform.InputConstants.isKeyDown(com.mojang.blaze3d.platform.InputConstants.KEY_LSHIFT) ? 10 : 2; gg.lellek.hud.gui.HudLayoutEditor.nudge(el, dir[k][0] * st, dir[k][1] * st, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight()); }).bounds(px + 60 + i * 24, py, 20, 20).build()); }
-        addRenderableWidget(Button.builder(Component.literal("Im Editor verschieben"), b -> minecraft.gui.setScreen(new HudEditorScreen(parent, el))).bounds(px + 160, py, 140, 20).build());
         addRenderableWidget(Button.builder(Component.literal("Zurück"), b -> onClose()).bounds(width / 2 - 50, height - 26, 100, 20).build());
     }
     private String vis() { return "Sichtbar: " + (el.enabled ? "An" : "Aus"); }
@@ -64,13 +59,12 @@ public class ElementSettingsScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor g, int mx, int my, float pt) {
         super.extractRenderState(g, mx, my, pt);
         Gfx.centered(g, font, el.name, width / 2, 10, 0xFFFFB400);
-        Gfx.text(g, font, "Position:", left, height - 46, 0xFFAAAAAA);
         Gfx.text(g, font, "Farbe: " + currentName(), left, top + 50, 0xFFAAAAAA); picker.draw(g); Gfx.text(g, font, "#", left - 8, top + 191, 0xFFAAAAAA);
         int sx = left, sy = top + 210;
         swatch(g, sx, sy, el.color, selectedSwatch == -1, mx, my); sx += 16;
         for (int i = 0; i < swatches.size(); i++) { swatch(g, sx, sy, swatches.get(i).value | 0xFF000000, selectedSwatch == i, mx, my); sx += 16; }
         if (!swatches.isEmpty()) Gfx.text(g, font, "Swatch anklicken = Farbe wählen", left, sy + 16, 0xFF666666);
-        int py = Math.max(top + 74 + el.settings.size() * 22, height - 64 - el.scaledHeight());
+        int py = Math.max(top + 74 + el.settings.size() * 22, height - 50 - el.scaledHeight());
         Gfx.text(g, font, "Vorschau", left + 150, py - 12, 0xFFAAAAAA);
         int ox = el.x, oy = el.y; el.x = left + 150; el.y = py; el.draw(g); el.x = ox; el.y = oy;
     }
