@@ -31,12 +31,13 @@ jobs:
           JAR=$(find ~/.gradle .gradle -name 'minecraft-*.jar' -path '*26.3*' 2>/dev/null | grep -v sources | head -1)
           echo "JAR=$JAR"
           CP=$(find ~/.gradle -name '*.jar' | tr '\n' ':')
-          { javap -p -cp "$JAR:$CP" net.minecraft.server.Services com.mojang.authlib.minecraft.SessionService net.minecraft.client.Camera net.minecraft.client.model.player.PlayerModel
-            javap -p -cp "$JAR:$CP" net.minecraft.world.entity.Entity | grep -i " turn"
-            javap -p -cp "$JAR:$CP" net.minecraft.client.OptionInstance | grep -i " set"
-            echo "== FOV-Suche"
-            unzip -Z1 "$JAR" | grep '^net/minecraft/client/.*\.class$' | grep -v '\$' | sed 's/\.class$//; s#/#.#g' > classes.txt
-            xargs -n 400 javap -p -cp "$JAR:$CP" < classes.txt 2>/dev/null | grep -i "^.*class \|fov" | grep -i -B1 "fov" | grep -v "^--"
+          { javap -p -cp "$JAR:$CP" net.minecraft.client.renderer.entity.state.AvatarRenderState net.minecraft.client.renderer.entity.state.LivingEntityRenderState net.minecraft.client.renderer.entity.state.EntityRenderState net.minecraft.client.gui.screens.Screen net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper net.minecraft.client.input.KeyEvent
+            javap -p -cp "$JAR:$CP" com.mojang.blaze3d.platform.InputConstants | grep -v "static final int"
+            javap -p -cp "$JAR:$CP" net.minecraft.client.KeyMapping | grep -iv lambda
+            javap -p -cp "$JAR:$CP" com.mojang.blaze3d.platform.Window | grep -i "focus\|framerate\|minimi\|handle"
+            javap -p -cp "$JAR:$CP" net.minecraft.client.Minecraft | grep -i "active\|focus\|framerate\|fps"
+            javap -p -cp "$JAR:$CP" net.minecraft.client.Options | grep -i "framerate\|inactiv\|camera\|fps"
+            javap -p -cp "$JAR:$CP" net.minecraft.client.renderer.entity.player.AvatarRenderer | grep -iv lambda
           } > api.txt 2>&1 || true
           # Log in Branch ci-logs ablegen, damit er per API lesbar ist
           mkdir /tmp/logs && cp build.log api.txt /tmp/logs/ 2>/dev/null || true
