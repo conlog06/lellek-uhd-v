@@ -118,6 +118,6 @@ public class LellekHud implements ClientModInitializer {
     }
 
     private static KeyMapping key(String name, int code) {
-        return KeyMappingHelper.registerKeyMapping(new KeyMapping(name, InputConstants.Type.KEYSYM, code, KeyMapping.Category.MISC));
+        return KeyMappingHelper.registerKeyMapping(new KeyMapping(name, InputConstants.Type.KEYBOARD, code, KeyMapping.Category.MISC));
     }
 }

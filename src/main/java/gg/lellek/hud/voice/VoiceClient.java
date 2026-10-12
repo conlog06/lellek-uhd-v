@@ -55,7 +55,7 @@ public class VoiceClient {
             try {
                 Minecraft mc = Minecraft.getInstance();
                 String serverId = new BigInteger(130, new SecureRandom()).toString(16);
-                new com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService(mc.getProxy()).createMinecraftSessionService().joinServer(mc.getUser().getProfileId(), mc.getUser().getAccessToken(), serverId);
+                mc.services().sessionService().joinServer(mc.getUser().getProfileId(), mc.getUser().getAccessToken(), serverId);
                 HttpURLConnection c = (HttpURLConnection) new URL(base() + "/v1/auth").openConnection();
                 c.setRequestMethod("POST"); c.setDoOutput(true); c.setConnectTimeout(5000); c.setReadTimeout(8000); c.setRequestProperty("Content-Type", "application/json");
                 c.getOutputStream().write(("{\"name\":\"" + mc.getUser().getName() + "\",\"serverId\":\"" + serverId + "\"}").getBytes(StandardCharsets.UTF_8));

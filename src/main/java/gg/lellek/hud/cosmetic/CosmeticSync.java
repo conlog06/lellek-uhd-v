@@ -86,7 +86,7 @@ public class CosmeticSync {
     private static void login() throws Exception {
         Minecraft mc = Minecraft.getInstance();
         String serverId = new BigInteger(130, new SecureRandom()).toString(16);
-        new com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService(mc.getProxy()).createMinecraftSessionService().joinServer(mc.getUser().getProfileId(), mc.getUser().getAccessToken(), serverId);
+        mc.services().sessionService().joinServer(mc.getUser().getProfileId(), mc.getUser().getAccessToken(), serverId);
         JsonObject j = sendJson(open("POST", "/v1/auth", false), "{\"name\":\"" + mc.getUser().getName() + "\",\"serverId\":\"" + serverId + "\"}");
         token = j.get("token").getAsString();
     }
