@@ -21,13 +21,21 @@ jobs:
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
       - name: Build
-        run: chmod +x gradlew && ./gradlew build --stacktrace --no-daemon
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew build --no-daemon 2>&1 | tee build.log
       - name: API-Diagnose (nur bei Fehler)
         if: failure()
         run: |
           JAR=$(find ~/.gradle .gradle -name 'minecraft-*.jar' -path '*26.3*' 2>/dev/null | grep -v sources | head -1)
           echo "JAR=$JAR"
-          [ -n "$JAR" ] && javap -p -cp "$JAR" net.minecraft.client.MouseHandler net.minecraft.client.renderer.GameRenderer || true
+          [ -n "$JAR" ] && javap -p -cp "$JAR" net.minecraft.client.MouseHandler net.minecraft.client.renderer.GameRenderer > api.txt 2>&1 || true
+          # Log in Branch ci-logs ablegen, damit er per API lesbar ist
+          mkdir /tmp/logs && cp build.log api.txt /tmp/logs/ 2>/dev/null || true
+          cd /tmp/logs && git init -q && git checkout -q -b ci-logs && git add -A
+          git -c user.name=ci -c user.email=ci@localhost commit -qm "log ${GITHUB_SHA}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-logs
       - uses: actions/upload-artifact@v4
         with:
           name: LellekHUD-jar
