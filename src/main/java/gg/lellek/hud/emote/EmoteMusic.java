@@ -40,7 +40,7 @@ public class EmoteMusic {
     }
     private static void note(Holder<SoundEvent> s, int semis, float vol) {
         float pitch = (float) Math.pow(2, (semis - 12) / 12.0);
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(s, pitch, vol));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(s.value(), pitch, vol));
     }
 
     // ---- Fertige Songs ----
