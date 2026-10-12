@@ -15,7 +15,7 @@ public class MouseHandlerMixin {
     @Inject(method = "onButton", at = @At("HEAD"), require = 0)
     private void lellekhud$press(long window, MouseButtonInfo info, int action, CallbackInfo ci) {
         gg.lellek.hud.Diag.mouse = true;
-        if (action == 1) ClickTracker.press(info.button());
+        if (action == com.mojang.blaze3d.platform.InputConstants.PRESS) ClickTracker.press(info.button());
     }
 
     /** Mausrad während Zoom: Zoom-Stufe statt Hotbar-Slot ändern. */

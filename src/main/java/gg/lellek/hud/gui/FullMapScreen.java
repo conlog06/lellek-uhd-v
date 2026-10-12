@@ -115,15 +115,15 @@ public class FullMapScreen extends Screen {
     public boolean mouseClicked(MouseButtonEvent e, boolean dbl) {
         if (super.mouseClicked(e, dbl)) return true;
         int mouseX = (int) e.x(), mouseY = (int) e.y();
-        for (Waypoint w : Waypoints.here()) { int wx = sx(w.x + 0.5), wz = sy(w.z + 0.5); if (Math.abs(mouseX - wx) <= 5 && Math.abs(mouseY - wz) <= 5) { if (e.button() == 1) minecraft.gui.setScreen(new WaypointEditScreen(this, w, false)); return true; } }
-        if (e.button() == 0) { dragging = true; leftDown = true; dragX = e.x(); dragY = e.y(); dragCx = cx; dragCz = cz; }
+        for (Waypoint w : Waypoints.here()) { int wx = sx(w.x + 0.5), wz = sy(w.z + 0.5); if (Math.abs(mouseX - wx) <= 5 && Math.abs(mouseY - wz) <= 5) { if (e.button() == gg.lellek.hud.Mouse.RIGHT) minecraft.gui.setScreen(new WaypointEditScreen(this, w, false)); return true; } }
+        if (e.button() == gg.lellek.hud.Mouse.LEFT) { dragging = true; leftDown = true; dragX = e.x(); dragY = e.y(); dragCx = cx; dragCz = cz; }
         return true;
     }
     @Override
     public boolean mouseDragged(MouseButtonEvent e, double dx, double dy) { if (dragging) { cx = dragCx - (e.x() - dragX) * scale(); cz = dragCz - (e.y() - dragY) * scale(); return true; } return super.mouseDragged(e, dx, dy); }
     @Override
     public boolean mouseReleased(MouseButtonEvent e) {
-        if (e.button() == 0) leftDown = false;
+        if (e.button() == gg.lellek.hud.Mouse.LEFT) leftDown = false;
         if (dragging && Math.abs(e.x() - dragX) < 3 && Math.abs(e.y() - dragY) < 3 && minecraft.player != null) {
             int bx = (int) Math.floor(cx + (e.x() - width / 2.0) * scale()), bz = (int) Math.floor(cz + (e.y() - height / 2.0) * scale());
             minecraft.gui.setScreen(new WaypointEditScreen(this, new Waypoint("", Waypoints.currentWorld(), bx, minecraft.player.getBlockY(), bz, 0xFFFFB400), true));

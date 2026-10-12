@@ -4,6 +4,10 @@
 
 **Download:** neueste Version unter [Releases](https://github.com/conlog06/lellek-uhd-v/releases/latest) – `LellekHUD-26.3-x.y.z.jar` in den `mods`-Ordner legen (benötigt Fabric Loader ≥ 0.19.5, Fabric API und Java 25).
 
+## Neu in 1.4.2
+
+- **Maustasten-Fix für 26.3**: Minecraft nummeriert die Maustasten seit 26.3 anders (links = 1 statt 0). Dadurch öffnete Linksklick im HUD-Editor die Einstellungen statt zu ziehen, und CPS/Farbwähler/Karte reagierten falsch. Jetzt werden überall Minecrafts eigene Konstanten benutzt.
+
 ## Neu in 1.4.1
 
 - **HUD-Editor repariert**: Ausgeschaltete Elemente werden im Editor nicht mehr als „(aus)“-Platzhalter über die aktiven gelegt (das war die „doppelte Ebene“), Klicks greifen immer das sichtbare Element, Ziehen bricht nicht mehr sofort ab.

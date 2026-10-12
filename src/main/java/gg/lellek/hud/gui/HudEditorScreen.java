@@ -41,7 +41,7 @@ public class HudEditorScreen extends Screen {
     @Override
     public boolean mouseClicked(MouseButtonEvent e, boolean doubleClick) {
         if (super.mouseClicked(e, doubleClick)) return true;
-        if (e.button() == 0) leftDown = true;
+        if (e.button() == gg.lellek.hud.Mouse.LEFT) leftDown = true;
         HudElement settings = editor.click((int) e.x(), (int) e.y(), e.button());
         if (settings != null) { minecraft.gui.setScreen(new ElementSettingsScreen(this, settings)); return true; }
         return editor.isDragging();
@@ -68,7 +68,7 @@ public class HudEditorScreen extends Screen {
         return super.keyPressed(e);
     }
     @Override
-    public boolean mouseReleased(MouseButtonEvent e) { if (e.button() == 0) leftDown = false; editor.release(); return super.mouseReleased(e); }
+    public boolean mouseReleased(MouseButtonEvent e) { if (e.button() == gg.lellek.hud.Mouse.LEFT) leftDown = false; editor.release(); return super.mouseReleased(e); }
     @Override
     public void onClose() { editor.release(); LellekHud.config.save(); if (parent != null) minecraft.gui.setScreen(parent); else super.onClose(); }
     @Override

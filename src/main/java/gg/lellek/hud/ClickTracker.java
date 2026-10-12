@@ -9,7 +9,7 @@ import java.util.Deque;
 public class ClickTracker {
     private static final Deque<Long> left = new ArrayDeque<>(), right = new ArrayDeque<>();
     private static boolean mixinActive, wasLeft, wasRight;
-    public static void press(int button) { mixinActive = true; long now = System.currentTimeMillis(); if (button == 0) left.addLast(now); if (button == 1) right.addLast(now); }
+    public static void press(int button) { mixinActive = true; long now = System.currentTimeMillis(); if (button == Mouse.LEFT) left.addLast(now); if (button == Mouse.RIGHT) right.addLast(now); }
     public static void tick(Minecraft mc) {
         if (mixinActive || mc.player == null) return;
         boolean l = mc.options.keyAttack.isDown(), r = mc.options.keyUse.isDown(); long now = System.currentTimeMillis();

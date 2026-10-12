@@ -45,7 +45,7 @@ public class WaypointEditScreen extends Screen {
         picker.draw(g);
     }
     @Override
-    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { if (e.button() == 0 && picker.mouseClicked(e.x(), e.y())) return true; return super.mouseClicked(e, dbl); }
+    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { if (e.button() == gg.lellek.hud.Mouse.LEFT && picker.mouseClicked(e.x(), e.y())) return true; return super.mouseClicked(e, dbl); }
     @Override
     public boolean mouseDragged(MouseButtonEvent e, double dx, double dy) { picker.mouseDragged(e.x(), e.y()); return super.mouseDragged(e, dx, dy); }
     @Override

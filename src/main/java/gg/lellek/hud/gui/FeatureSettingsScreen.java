@@ -51,7 +51,7 @@ public class FeatureSettingsScreen extends Screen {
     }
     @Override
     public boolean mouseClicked(MouseButtonEvent e, boolean dbl) {
-        if (picker != null && e.button() == 0 && picker.mouseClicked(e.x(), e.y())) { colorSetting.value = picker.getColor(); return true; }
+        if (picker != null && e.button() == gg.lellek.hud.Mouse.LEFT && picker.mouseClicked(e.x(), e.y())) { colorSetting.value = picker.getColor(); return true; }
         return super.mouseClicked(e, dbl);
     }
     @Override

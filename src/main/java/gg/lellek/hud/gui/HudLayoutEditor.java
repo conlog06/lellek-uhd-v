@@ -43,8 +43,8 @@ public class HudLayoutEditor {
         for (int i = LellekHud.config.elements.size() - 1; i >= 0; i--) {
             HudElement el = LellekHud.config.elements.get(i);
             if (!el.enabled || !el.contains(mx, my)) continue;
-            if (button == 1) return el;
-            if (button == 0) { dragging = el; focus = el; dragOffX = mx - el.x; dragOffY = my - el.y; }
+            if (button == gg.lellek.hud.Mouse.RIGHT) return el;
+            if (button == gg.lellek.hud.Mouse.LEFT) { dragging = el; focus = el; dragOffX = mx - el.x; dragOffY = my - el.y; }
             return null;
         }
         return null;

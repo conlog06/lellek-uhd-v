@@ -64,7 +64,7 @@ public class CosmeticWheelScreen extends Screen {
         minecraft.gui.setScreen(null);
     }
     @Override
-    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { if (e.button() == 1) { minecraft.gui.setScreen(null); return true; } choose(); return true; }
+    public boolean mouseClicked(MouseButtonEvent e, boolean dbl) { if (e.button() == gg.lellek.hud.Mouse.RIGHT) { minecraft.gui.setScreen(null); return true; } choose(); return true; }
     /** Halten + loslassen wählt aus. Die KeyMapping ist bei offenem Screen immer "nicht gedrückt" – daher die echte Taste abfragen. */
     private boolean physicallyDown() {
         try {

@@ -73,7 +73,7 @@ public class ElementSettingsScreen extends Screen {
     public boolean mouseClicked(MouseButtonEvent e, boolean dbl) {
         int mx = (int) e.x(), my = (int) e.y(), sy = top + 210;
         if (my >= sy && my < sy + 12 && mx >= left && mx < left + 16 * (swatches.size() + 1)) { selectedSwatch = (mx - left) / 16 - 1; picker.setColor(currentColor()); syncHex(); return true; }
-        if (e.button() == 0 && picker.mouseClicked(e.x(), e.y())) { setCurrentColor(picker.getColor()); syncHex(); return true; }
+        if (e.button() == gg.lellek.hud.Mouse.LEFT && picker.mouseClicked(e.x(), e.y())) { setCurrentColor(picker.getColor()); syncHex(); return true; }
         return super.mouseClicked(e, dbl);
     }
     @Override
