@@ -26,7 +26,7 @@ jobs:
           set -o pipefail
           ./gradlew build --no-daemon 2>&1 | tee build.log
       - name: API-Diagnose (nur bei Fehler)
-        if: failure() || github.event_name == 'workflow_dispatch'
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[diag]')
         run: |
           JAR=$(find ~/.gradle .gradle -name 'minecraft-*.jar' -path '*26.3*' 2>/dev/null | grep -v sources | head -1)
           echo "JAR=$JAR"
