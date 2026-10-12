@@ -41,7 +41,7 @@ public class DamageIndicators {
         Minecraft mc = Minecraft.getInstance(); Font font = mc.font; Vec3 cam = ctx.levelState().cameraRenderState.pos; PoseStack pose = ctx.poseStack(); net.minecraft.client.renderer.SubmitNodeCollector out = ctx.submitNodeCollector();
         for (Ind i : list) {
             float age = (System.currentTimeMillis() - i.born) / 1200f;
-            pose.pushPose(); pose.translate(i.x - cam.x, i.y - cam.y + age * 0.8, i.z - cam.z); pose.mulPose(ctx.levelState().cameraRenderState.orientation); pose.scale(0.03f, -0.03f, 0.03f);
+            pose.pushPose(); pose.translate(i.x - cam.x, i.y - cam.y + age * 0.8, i.z - cam.z); pose.mulPose(new org.joml.Matrix4f().rotation(ctx.levelState().cameraRenderState.orientation)); pose.scale(0.03f, -0.03f, 0.03f);
             int a = Math.max(20, (int) (255 * (1 - age)));
             out.submitText(pose, -font.width(i.text) / 2f, 0, net.minecraft.network.chat.Component.literal(i.text).getVisualOrderText(), true, Font.DisplayMode.SEE_THROUGH, 0xF000F0, (i.color & 0xFFFFFF) | (a << 24), 0, 0);
             pose.popPose();

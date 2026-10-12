@@ -30,7 +30,12 @@ jobs:
         run: |
           JAR=$(find ~/.gradle .gradle -name 'minecraft-*.jar' -path '*26.3*' 2>/dev/null | grep -v sources | head -1)
           echo "JAR=$JAR"
-          [ -n "$JAR" ] && javap -p -cp "$JAR" net.minecraft.client.MouseHandler net.minecraft.client.renderer.GameRenderer > api.txt 2>&1 || true
+          CP=$(find ~/.gradle -name '*.jar' | tr '\n' ':')
+          { javap -p -cp "$JAR:$CP" net.minecraft.client.MouseHandler net.minecraft.client.renderer.GameRenderer 'com.mojang.blaze3d.platform.InputConstants$Type' com.mojang.blaze3d.platform.InputConstants net.minecraft.client.User
+            javap -p -cp "$JAR:$CP" net.minecraft.client.Minecraft | grep -i "session\|proxy\|profile\|services\|user"
+            echo "== authlib jars"; find ~/.gradle -iname '*authlib*.jar'
+            for a in $(find ~/.gradle -iname '*authlib*.jar' | grep -v sources); do echo "-- $a"; unzip -l "$a" | grep -i "session\|yggdrasil" | head -40; done
+          } > api.txt 2>&1 || true
           # Log in Branch ci-logs ablegen, damit er per API lesbar ist
           mkdir /tmp/logs && cp build.log api.txt /tmp/logs/ 2>/dev/null || true
           cd /tmp/logs && git init -q && git checkout -q -b ci-logs && git add -A

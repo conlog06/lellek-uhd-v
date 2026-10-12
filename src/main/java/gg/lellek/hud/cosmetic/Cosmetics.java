@@ -52,7 +52,7 @@ public class Cosmetics {
         public void render(PoseStack pose, SubmitNodeCollector out, int light, AvatarRenderState s, float t, net.minecraft.resources.Identifier tex) {
             pose.pushPose();
             pose.translate(0, -0.72f + Math.sin(t * 2) * 0.03f, 0);
-            pose.mulPose(Axis.YP.rotationDegrees(t * 40 % 360));
+            pose.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(t * 40 % 360)));
             part(root, pose, out, tex, light);
             pose.popPose();
         }
@@ -63,8 +63,8 @@ public class Cosmetics {
         protected void build(PartDefinition r) { r.addOrReplaceChild("crown", CubeListBuilder.create().texOffs(0, 0).addBox(-4.5f, -3, -4.5f, 9, 3, 9, new net.minecraft.client.model.geom.builders.CubeDeformation(0.2f)), PartPose.ZERO); }
         public void render(PoseStack pose, SubmitNodeCollector out, int light, AvatarRenderState s, float t, net.minecraft.resources.Identifier tex) {
             pose.pushPose();
-            pose.mulPose(Axis.YP.rotationDegrees(s.yRot));
-            pose.mulPose(Axis.XP.rotationDegrees(s.xRot));
+            pose.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(s.yRot)));
+            pose.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(s.xRot)));
             pose.translate(0, -0.5f, 0);
             part(root, pose, out, tex, light);
             pose.popPose();

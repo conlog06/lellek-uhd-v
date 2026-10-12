@@ -48,7 +48,7 @@ public class CosmeticLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         net.minecraft.resources.Identifier tex = c.textureFor(uuidOf(s));
         if (tex == null) return;
         pose.pushPose();
-        if (s.pose == Pose.CROUCHING) { pose.translate(0, 0.2f, 0); pose.mulPose(Axis.XP.rotationDegrees(28.65f)); }
+        if (s.pose == Pose.CROUCHING) { pose.translate(0, 0.2f, 0); pose.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(28.65f))); }
         c.render(pose, out, light, s, t, tex);
         pose.popPose();
     }

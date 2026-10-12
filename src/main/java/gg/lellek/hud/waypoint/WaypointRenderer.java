@@ -40,7 +40,7 @@ public class WaypointRenderer {
         float scale = 0.016f * Math.max(1f, dist / 8f);
         pose.pushPose();
         pose.translate(x, y + 0.6, z);
-        pose.mulPose(ctx.levelState().cameraRenderState.orientation);
+        pose.mulPose(new org.joml.Matrix4f().rotation(ctx.levelState().cameraRenderState.orientation));
         pose.scale(scale, -scale, scale);
         float w = font.width(text) / 2f;
         out.submitText(pose, -w, -3, Component.literal(text).getVisualOrderText(), true, Font.DisplayMode.SEE_THROUGH, 0xF000F0, 0xFFFFFFFF, (color & 0xFFFFFF) | 0x60000000, 0);
