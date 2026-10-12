@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 
 /** Auswahlrad auf X: Maus in Richtung des Cosmetics, klicken oder Taste loslassen. */
 public class CosmeticWheelScreen extends Screen {
-    private static final int INNER = 28, OUTER = 78;
+    private static final int INNER = 34, OUTER = 100;
     private final long opened = System.currentTimeMillis();
     private int hovered = -1;
 

@@ -145,7 +145,8 @@ public class ModMenuScreen extends Screen {
             Gfx.centered(g, font, LAYOUT_BTNS[i], x + BTN_W / 2, y + 5, i == 0 ? GOLD : 0xFFFFFFFF);
         }
     }
-    private void enterLayout(HudElement focus) { layoutMode = true; layout.focus(focus); if (search != null) search.setFocused(false); }
+    /** Verschieben passiert im HUD-Editor (mit Elementliste); zurück landet man wieder hier */
+    private void enterLayout(HudElement focus) { minecraft.gui.setScreen(new HudEditorScreen(this, focus)); }
     private void exitLayout() { layoutMode = false; layout.release(); LellekHud.config.save(); rebuild(); }
 
     private void drawToggle(GuiGraphicsExtractor g, Card c, int x, int y) {

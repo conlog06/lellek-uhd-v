@@ -37,16 +37,8 @@ public class MinimapElement extends HudElement {
         texture.upload();
     }
     private static int toAbgr(int argb) { return (argb & 0xFF00FF00) | ((argb >> 16) & 0xFF) | ((argb & 0xFF) << 16); }
-    public static int colorAt(ClientLevel level, int bx, int bz) {
-        if (!level.hasChunkAt(new BlockPos(bx, 64, bz))) return 0xFF101010;
-        int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz) - 1; if (h < level.getMinY()) return 0xFF101010;
-        BlockPos top = new BlockPos(bx, h, bz); BlockState st = level.getBlockState(top);
-        int c = st.getMapColor(level, top).col; if (c == 0) return 0xFF101010;
-        int north = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz - 1) - 1;
-        float shade = h > north ? 1.12f : h < north ? 0.82f : 1f;
-        int r = Math.min(255, (int) (((c >> 16) & 255) * shade)), g = Math.min(255, (int) (((c >> 8) & 255) * shade)), b = Math.min(255, (int) ((c & 255) * shade));
-        return 0xFF000000 | (r << 16) | (g << 8) | b;
-    }
+    /** Farbe aus der gespeicherten Karte (live für geladene Chunks) */
+    public static int colorAt(ClientLevel level, int bx, int bz) { return gg.lellek.hud.map.MapStore.color(level, bx, bz); }
     protected void render(GuiGraphicsExtractor g) {
         Minecraft mc = Minecraft.getInstance(); if (mc.player == null || mc.level == null) return;
         update(mc);

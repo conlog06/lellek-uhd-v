@@ -27,6 +27,7 @@ public class HudLayoutEditor {
             int border = el == dragging ? 0xFFFF8F1C : (el == focus && pulse) ? 0xFFFFFFFF : hover || el == focus ? 0xFFFFB400 : el.enabled ? 0x60FFFFFF : 0x60FF5555;
             g.outline(el.x - 1, el.y - 1, el.scaledWidth() + 2, el.scaledHeight() + 2, border);
             if (el.enabled) el.draw(g);
+            if (el == focus || el == dragging || hover) { String tag = el.name + " \u00b7 " + el.scale + "%"; int ty = el.y >= 12 ? el.y - 11 : el.y + el.scaledHeight() + 2; g.fill(el.x - 1, ty - 1, el.x + font.width(tag) + 3, ty + 9, 0xC0000000); g.text(font, tag, el.x + 1, ty, 0xFFFFB400, false); }
             else Gfx.centered(g, font, el.name + " (aus)", el.x + el.scaledWidth() / 2, el.y + el.scaledHeight() / 2 - 4, 0xFF888888);
         }
     }
@@ -44,6 +45,11 @@ public class HudLayoutEditor {
     }
     public boolean isOverElement(int mx, int my) { for (HudElement el : LellekHud.config.elements) if (el.contains(mx, my)) return true; return false; }
     public boolean isDragging() { return dragging != null; }
+    public HudElement focused() { return focus; }
+    /** Element pixelgenau verschieben (Pfeiltasten / Buttons) */
+    public static void nudge(HudElement el, int dx, int dy, int width, int height) {
+        if (el == null) return; el.layout(width, height); el.moveTo(el.x + dx, el.y + dy, width, height); LellekHud.config.save();
+    }
 
     public boolean drag(int mx, int my, int width, int height) {
         if (dragging == null) return false;

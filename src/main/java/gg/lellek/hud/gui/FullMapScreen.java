@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
-/** Vollbild-Karte (Taste M): Mausrad zoomt, Ziehen verschiebt, Klick setzt Wegpunkt, Rechtsklick auf Marker bearbeitet. */
+/** Vollbild-Karte (Taste M) mit gespeicherten Gebieten (Overworld/Nether/End getrennt): Mausrad zoomt, Ziehen verschiebt, Klick setzt Wegpunkt, Rechtsklick auf Marker bearbeitet. */
 public class FullMapScreen extends Screen {
     private static final int TEX = 256;
     private static DynamicTexture texture; private static final Identifier LOC = Identifier.fromNamespaceAndPath("lellekhud", "fullmap");
@@ -57,7 +57,7 @@ public class FullMapScreen extends Screen {
         }
         if (minecraft.player != null) { int px = toScreenX(minecraft.player.getX()), pz = toScreenZ(minecraft.player.getZ()); g.fill(px - 2, pz - 2, px + 2, pz + 2, 0xFFFFFFFF); }
         int bx = (int) Math.floor(cx + (mouseX - x - s / 2) * scale()), bz = (int) Math.floor(cz + (mouseY - y - s / 2) * scale());
-        Gfx.text(g, font, "Karte \u00b7 Zoom " + zoom + "x \u00b7 Cursor " + bx + " " + bz, 10, height - 20, 0xFFAAAAAA);
+        Gfx.text(g, font, "Karte \u00b7 " + zoom + " Blöcke/Pixel \u00b7 Cursor " + bx + " " + bz, 10, height - 20, 0xFFAAAAAA);
         Gfx.text(g, font, "Klick = Wegpunkt \u00b7 Rechtsklick = bearbeiten \u00b7 Ziehen = verschieben \u00b7 Mausrad = Zoom", 10, height - 10, 0xFF666666);
     }
     @Override
@@ -80,7 +80,7 @@ public class FullMapScreen extends Screen {
         dragging = false; return super.mouseReleased(e);
     }
     @Override
-    public boolean mouseScrolled(double mx, double my, double dx, double dy) { zoom = Math.max(1, Math.min(8, zoom - (int) Math.signum(dy))); return true; }
+    public boolean mouseScrolled(double mx, double my, double dx, double dy) { zoom = Math.max(1, Math.min(8, dy > 0 ? zoom / 2 : zoom * 2)); return true; }
     @Override
     public boolean isPauseScreen() { return false; }
 }

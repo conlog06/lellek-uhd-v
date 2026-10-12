@@ -20,7 +20,8 @@ import java.util.List;
 public class Cosmetics {
     public static final List<Cosmetic> ALL = new ArrayList<>();
     public static final String[] CATEGORIES = { "Alle", "Kopf", "Rücken", "Effekte" };
-    static { ALL.add(new Wings()); ALL.add(new Halo()); ALL.add(new Crown()); ALL.add(new LellekCape()); ALL.add(new CustomCape()); ALL.add(new Sparkles()); }
+    static { ALL.add(new Wings()); ALL.add(new Halo()); ALL.add(new Crown()); ALL.add(new LellekCape()); ALL.add(new CustomCape()); ALL.add(new Sparkles());
+        ALL.add(new LellekCape("cape_ocean", "Ozean-Cape", "cape_ocean.png")); ALL.add(new LellekCape("cape_emerald", "Smaragd-Cape", "cape_emerald.png")); ALL.add(new LellekCape("cape_fire", "Feuer-Cape", "cape_fire.png")); ALL.add(new LellekCape("cape_galaxy", "Galaxie-Cape", "cape_galaxy.png")); }
     public static Cosmetic byId(String id) { for (Cosmetic c : ALL) if (c.id.equals(id)) return c; return null; }
 
     /** Modellteil abschicken – Signatur von SubmitNodeCollector kann sich in 26.x ändern */
@@ -74,7 +75,8 @@ public class Cosmetics {
     static class LellekCape extends Cosmetic {
         ModelPart cape;
         LellekCape() { this("cape", "Lellek-Cape"); }
-        LellekCape(String id, String name) { super(id, name, "Rücken", "cape.png", 64, 32); }
+        LellekCape(String id, String name) { this(id, name, "cape.png"); }
+        LellekCape(String id, String name, String tex) { super(id, name, "Rücken", tex, 64, 32); }
         protected void build(PartDefinition r) { r.addOrReplaceChild("cape", CubeListBuilder.create().texOffs(0, 0).addBox(-5, 0, -1, 10, 16, 1), PartPose.offset(0, 0, 2)); }
         public void render(PoseStack pose, SubmitNodeCollector out, int light, AvatarRenderState s, float t, net.minecraft.resources.Identifier tex) {
             if (cape == null) cape = root.getChild("cape");

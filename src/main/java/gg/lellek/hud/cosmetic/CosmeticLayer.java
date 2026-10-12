@@ -46,6 +46,7 @@ public class CosmeticLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
     @Override
     public void submit(PoseStack pose, SubmitNodeCollector out, int light, AvatarRenderState s, float yRot, float xRot) {
+        gg.lellek.hud.Diag.cosmetics = true;
         Cosmetic c = forState(s);
         if (c == null || s.isInvisible) return;
         float t = s.ageInTicks / 20f;

@@ -4,6 +4,14 @@
 
 **Download:** neueste Version unter [Releases](https://github.com/conlog06/lellek-uhd-v/releases/latest) – `LellekHUD-26.3-x.y.z.jar` in den `mods`-Ordner legen (benötigt Fabric Loader ≥ 0.19.5, Fabric API und Java 25).
 
+## Neu in 1.3.2
+
+- **HUD-Editor** (rechte Shift, oder Mod-Menü → „✥ HUD verschieben“): Verschieben funktioniert jetzt zuverlässig in 26.3. Neu: **Elementliste links** (Kästchen = an/aus, Name = auswählen, ⚙ = Einstellungen), **Pfeiltasten** verschieben das gewählte Element pixelgenau (Shift = 10 px), Name + Größe werden am Element angezeigt.
+- **Element-Einstellungen**: Position direkt mit ◀ ▶ ▲ ▼ ändern, Button „Im Editor verschieben“.
+- **Gespeicherte Karte**: Jeder geladene Chunk wird eingefärbt und gespeichert (`config/lellek-map/`) – getrennt pro Welt/Server und für **Overworld, Nether und End**. Minimap und Karte (M) zeigen besuchte Gebiete dauerhaft. Nether-Karte zeigt den Boden unter der Decke. Karte zoomt bis 8 Blöcke/Pixel raus.
+- **4 neue Capes**: Ozean, Smaragd, Feuer, Galaxie (X-Rad oder Garderobe).
+- Diagnose im Mod-Menü zeigt jetzt auch, ob Cosmetics gezeichnet werden.
+
 ## Neu in 1.3.1
 
 - **HUD im Mod-Menü verschieben**: Seitenleiste → „✥ HUD verschieben“ oder ✥ auf einer HUD-Element-Karte. Das Menü blendet sich aus, Elemente direkt ziehen (mit Einrasten), Mausrad = Größe, Rechtsklick = Einstellungen, „Fertig“/ESC = zurück ins Menü.
