@@ -35,9 +35,8 @@ jobs:
             javap -p -cp "$JAR:$CP" net.minecraft.world.entity.Entity | grep -i " turn"
             javap -p -cp "$JAR:$CP" net.minecraft.client.OptionInstance | grep -i " set"
             echo "== FOV-Suche"
-            for c in $(unzip -Z1 "$JAR" | grep '^net/minecraft/client/.*\.class$' | grep -v '\$' | sed 's/\.class$//; s#/#.#g'); do
-              javap -p -cp "$JAR:$CP" "$c" 2>/dev/null | grep -i "fov" | sed "s#^#$c: #"
-            done
+            unzip -Z1 "$JAR" | grep '^net/minecraft/client/.*\.class$' | grep -v '\$' | sed 's/\.class$//; s#/#.#g' > classes.txt
+            xargs -n 400 javap -p -cp "$JAR:$CP" < classes.txt 2>/dev/null | grep -i "^.*class \|fov" | grep -i -B1 "fov" | grep -v "^--"
           } > api.txt 2>&1 || true
           # Log in Branch ci-logs ablegen, damit er per API lesbar ist
           mkdir /tmp/logs && cp build.log api.txt /tmp/logs/ 2>/dev/null || true
