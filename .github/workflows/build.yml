@@ -25,7 +25,7 @@ jobs:
           chmod +x gradlew
           set -o pipefail
           ./gradlew build --no-daemon 2>&1 | tee build.log
-      - name: API-Diagnose (nur bei Fehler)
+      - name: API-Diagnose (bei Fehler)
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[diag]')
         run: |
           JAR=$(find ~/.gradle .gradle -name 'minecraft-*.jar' -path '*26.3*' 2>/dev/null | grep -v sources | head -1)
@@ -47,10 +47,20 @@ jobs:
         with:
           name: LellekHUD-jar
           path: build/libs/*.jar
-      - name: Release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Version lesen
+        id: ver
+        run: echo "version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+      - name: Release (Download)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            build/libs/LellekHUD-*[0-9].jar
-          generate_release_notes: true
+          tag_name: v${{ steps.ver.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: LellekHUD ${{ steps.ver.outputs.version }} für Minecraft 26.3
+          body: |
+            **Download:** `LellekHUD-26.3-${{ steps.ver.outputs.version }}.jar` unten unter *Assets* – in den `mods`-Ordner legen.
+            Benötigt: Minecraft 26.3, Fabric Loader ≥ 0.19.5, Fabric API, Java 25.
+
+            Neu: Smooth Zoom (C halten, Mausrad zoomt bis 50x näher ran), HUD-Elemente bleiben beim Ändern von Fenster-/GUI-/Element-Größe an ihrem Platz, Editor mit Einrasten und Mausrad-Größe.
+          files: build/libs/LellekHUD-26.3-${{ steps.ver.outputs.version }}.jar
+          make_latest: true
